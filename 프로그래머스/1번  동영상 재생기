@@ -1,0 +1,139 @@
+class Solution {
+    public String solution(String video_len, String pos, String op_start, String op_end, String[] commands) {
+        int mm = Integer.parseInt(pos.substring(0, 2));
+        int ss = Integer.parseInt(pos.substring(3, 5));
+
+        int video_len_mm = Integer.parseInt(video_len.substring(0,2)); 
+        int video_len_ss = Integer.parseInt(video_len.substring(3,5));
+        
+        int op_start_mm = Integer.parseInt(op_start.substring(0,2)); 
+        int op_start_ss = Integer.parseInt(op_start.substring(3,5));
+        
+        int op_end_mm = Integer.parseInt(op_end.substring(0,2)); 
+        int op_end_ss = Integer.parseInt(op_end.substring(3,5));
+        
+        int[] updatedTime1 = change(mm, ss, op_start_mm, op_start_ss, op_end_mm, op_end_ss);
+        mm = updatedTime1[0];
+        ss = updatedTime1[1];
+
+        for(int i=0; i < commands.length; i++){
+            if(commands[i].equals("prev")){
+                //마이너스일때
+                if(ss-10 < 0 ) {
+                   if(mm == 0){ //분0
+                      mm = 0;
+                      ss = 0;
+                   }else{//분1이상
+                       if(mm > 0){
+                          mm = mm-1;
+                          ss = (60+ss)-10;
+                       }
+                   }
+                }else if(ss==0 && mm==0){
+                      mm = 0;
+                      ss = 0;
+                }else{
+                      mm = mm;
+                      ss = ss-10;
+                }
+            }else if(commands[i].equals("next")){
+                //60초이상
+                if(ss+10 > 60) {
+                      mm = mm+1;
+                      ss = (ss+10)-60;
+                     if(video_len_ss - ss < 10 && video_len_mm - mm == 0){ 
+                          mm = video_len_mm;
+                          ss = video_len_ss;
+                     }
+                }else{
+                      ss = ss+10;
+                     if(video_len_ss - ss < 10 && video_len_mm - mm == 0){ 
+                          mm = video_len_mm;
+                          ss = video_len_ss;
+                     }
+                }
+            }
+            
+        }
+        
+        int[] updatedTime2 = change(mm, ss, op_start_mm, op_start_ss, op_end_mm, op_end_ss);
+        mm = updatedTime2[0];
+        ss = updatedTime2[1];
+        
+        String answer = String.format("%02d:%02d", mm, ss);
+        
+        return answer;
+    }
+    
+    public int[] change (int mm,int ss,int op_start_mm,int op_start_ss,int op_end_mm, int op_end_ss){
+        int[] mmss = new int[2];
+        
+        if(mm > op_start_mm && mm < op_end_mm){
+                mmss[0] = op_end_mm;
+                mmss[1] = op_end_ss;
+        }else if(mm == op_start_mm && ss >= op_start_ss){
+                mmss[0] = op_end_mm;
+                mmss[1] = op_end_ss;
+        }else if(mm == op_end_mm && ss <= op_end_ss){
+                mmss[0] = op_end_mm;
+                mmss[1] = op_end_ss;
+        }else {
+                mmss[0] = mm; 
+                mmss[1] = ss; 
+        }
+        
+        return mmss ;
+    }
+
+}
+
+/*
+import java.util.*;
+
+class Solution {
+
+    public String solution(String video_len, String pos, String op_start, String op_end, String[] commands) {
+        String answer = "";
+        int vLen = timeToInt(video_len);
+        int now = timeToInt(pos);
+        int op_s = timeToInt(op_start);
+        int op_e = timeToInt(op_end); 
+        // System.out.println(vLen+" "+now+" "+op_s+" "+op_e);
+
+        for(String c: commands){
+            // System.out.println(c+" "+now);
+            // 현재 재생 위치가 오프닝 구간임
+            if(now>=op_s && now<=op_e){
+                now = op_e;
+            }
+            if(c.equals("next")){
+                now += 10;
+                if(now > vLen){
+                    now = vLen;
+                }
+            } else if(c.equals("prev")){
+                now -= 10;
+                if(now < 0){
+                    now = 0;
+                }
+            }
+        }
+        // 최종 위치, 오프닝 구간 여부 확인
+        if(now>=op_s && now<=op_e){
+            now = op_e;
+        }
+        int m = now / 60;
+        int s = now % 60;
+
+        String mm = String.format("%02d", m);
+        String ss = String.format("%02d", s);
+        // System.out.println(mm+":"+ss);
+        answer = mm+":"+ss;
+
+        return answer;
+    }
+    public static int timeToInt(String str){
+        String[] srr = str.split(":");
+        return Integer.parseInt(srr[0])*60 + Integer.parseInt(srr[1]);
+    }
+}*/
