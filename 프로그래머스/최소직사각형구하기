@@ -1,0 +1,19 @@
+class Solution {
+    public int solution(int[][] sizes) {
+        int answer = 0;
+        int max_w = 0;
+        int max_h = 0;
+        //둘중 하나가 길면 가로 짧으면 세로임
+        for(int i = 0; i < sizes.length; i++){
+            int max  = Math.max(sizes[i][0],sizes[i][1]); 
+            int min = Math.min(sizes[i][0],sizes[i][1]);
+            //가장 긴 가로구하기
+            max_w = Math.max(max,max_w);
+            max_h = Math.max(min,max_h);
+        }
+        answer = max_w*max_h;
+        return answer;
+      }  
+    
+   
+}
