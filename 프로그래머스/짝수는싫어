@@ -1,0 +1,21 @@
+class Solution {
+    public int[] solution(int n) {
+        int[] answer = {};
+        int cnt = 1;
+        for(int i=1; i<= n; i++){
+            if(i%2 == 1){
+                answer = new int[cnt++];
+                // answer[cnt] = i%2;
+            }
+        }
+        int index = 0;
+        for(int i=1; i<= n; i++){
+            if(i%2 == 1){
+                answer[index++] = i; //2중for문했더니 값이 마지막숫자로 됨
+            }
+        }
+       
+        
+        return answer;
+    }
+}
